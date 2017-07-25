@@ -4,6 +4,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -11,15 +12,22 @@ import java.util.Map;
 /**
  * Created by ovidiu on 7/25/17.
  *
- * Singleton providing an API for data loading;
+ * Singleton exposing an API for data loading;
  */
 public class DataLoader {
     private DataLoader instance = null;
     private Map<String, String> available_commands;
+    private static String crtUser;
+    private static String hostName;
+    private static String crtDirectory;
 
     private DataLoader() {
         /* singleton private constructor */
         available_commands = new HashMap<String, String>();
+        if (crtUser == null || hostName == null) {
+            crtUser = retrieveLoggedUser();
+            hostName = retrieveHostname();
+        }
     }
 
     public DataLoader getInstance() {
@@ -83,8 +91,47 @@ public class DataLoader {
 
     }
 
-    private static int getOsType() {
+    protected static int getOsType() {
         /* will return 1 for Unix-like systems :) */
         return System.getProperty("os.name").contains("Windows") ? Constants.OS_WINDOWS : Constants.OS_UNIX_LIKE;
+    }
+
+    private static String retrieveLoggedUser(){
+        return System.getProperty("user.name");
+    }
+
+    protected static String retrieveHostname(){
+        String host;
+        if (DataLoader.getOsType() == Constants.OS_WINDOWS) {
+            host = System.getenv("COMPUTERNAME");
+        } else {
+            try {
+                host = java.net.InetAddress.getLocalHost().getCanonicalHostName();
+            } catch (IOException e) {
+                host = Constants.UNKNOWN_HOST;
+            }
+        }
+        return host;
+    }
+
+    public static String getCrtDirectory(){
+        if (crtDirectory == null) {
+            crtDirectory = System.getProperty( "user.home" );
+        }
+        return crtDirectory;
+    }
+
+    public static String getCrtUser() {
+        if (crtUser == null) {
+            crtUser = retrieveLoggedUser();
+        }
+        return crtUser;
+    }
+
+    public static String getHostName() {
+        if (hostName == null) {
+            hostName = retrieveHostname();
+        }
+        return hostName;
     }
 }
