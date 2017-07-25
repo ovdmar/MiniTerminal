@@ -1,0 +1,11 @@
+{
+  "list-files": "type",
+  "change-directory" : "cd",
+  "clear-window" : "cls",
+  "copy-file" : "copy",
+  "make-directory" : "mkdir",
+  "process-status" : "tasklist",
+  "remove-file" : "del",
+  "remove-directory" : "rmdir",
+  "create-file" : ""
+}

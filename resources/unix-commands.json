@@ -1,0 +1,11 @@
+{
+  "list-files": "ls",
+  "change-directory" : "cd",
+  "clear-window" : "clear",
+  "copy-file" : "cp",
+  "make-directory" : "mkdir",
+  "process-status" : "ps",
+  "remove-file" : "rm",
+  "remove-directory" : "rmdir",
+  "create-file" : "touch"
+}
