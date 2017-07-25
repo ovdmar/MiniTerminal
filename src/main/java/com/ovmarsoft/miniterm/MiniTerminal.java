@@ -1,6 +1,6 @@
 package com.ovmarsoft.miniterm;
 
-public class App {
+public class MiniTerminal {
     public static void main(String[] args) {
         /* empty project */
     }
