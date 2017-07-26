@@ -1,5 +1,6 @@
 {
-  "list-files": "type",
+  "list-files": "dir",
+  "show-file": "type",
   "change-directory" : "cd",
   "clear-window" : "cls",
   "copy-file" : "copy",
@@ -7,5 +8,6 @@
   "process-status" : "tasklist",
   "remove-file" : "del",
   "remove-directory" : "rmdir",
-  "create-file" : ""
+  "create-file" : "",
+  "exit" : "todo"
 }

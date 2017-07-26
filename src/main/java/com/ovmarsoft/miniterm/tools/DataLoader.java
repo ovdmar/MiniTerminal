@@ -5,18 +5,19 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
 /**
  * Created by ovidiu on 7/25/17.
- *
+ * <p>
  * Singleton exposing an API for data loading;
  */
 public class DataLoader {
-    private DataLoader instance = null;
-    private Map<String, String> available_commands;
+    private static DataLoader instance = null;
+    private static Map<String, String> available_commands;
     private static String crtUser;
     private static String hostName;
     private static String crtDirectory;
@@ -24,20 +25,27 @@ public class DataLoader {
 
     private DataLoader() {
         /* singleton private constructor */
-        available_commands = new HashMap<String, String>();
+        available_commands = new HashMap<>();
         if (crtUser == null || hostName == null) {
             crtUser = retrieveLoggedUser();
             hostName = retrieveHostname();
-            if (getOsType() == Constants.OS_WINDOWS){
-                pathLineSeparator = Constants.WINDOWS_PATH_SEP;
-            } else {
-                pathLineSeparator = Constants.UNIX_PATH_SEP;
-            }
+            pathLineSeparator = retrieveLineSeparator();
         }
     }
 
     public static String getPathLineSeparator() {
+        if (pathLineSeparator == null) {
+            pathLineSeparator = retrieveLineSeparator();
+        }
         return pathLineSeparator;
+    }
+
+    private static String retrieveLineSeparator() {
+        if (getOsType() == Constants.OS_WINDOWS) {
+            return Constants.WINDOWS_PATH_SEP;
+        } else {
+            return Constants.UNIX_PATH_SEP;
+        }
     }
 
     public DataLoader getInstance() {
@@ -54,7 +62,7 @@ public class DataLoader {
      * @return a map containing the available commands
      */
 
-    public Map<String, String> getAvailableCommands() {
+    public static Map<String, String> getAvailableCommands() {
         if (available_commands == null) {
             try {
                 available_commands = getOSCommands();
@@ -71,11 +79,11 @@ public class DataLoader {
      * Extracts the supported commands from the corresponding json resource file
      * after finding the current os type.
      *
-     * @throws JSONException if there is a problem with the resource file
-     * @throws Exception if the determined OS is not supported by the app
      * @return a HashMap containing the extracted commands
+     * @throws JSONException if there is a problem with the resource file
+     * @throws Exception     if the determined OS is not supported by the app
      */
-    private Map<String, String> getOSCommands() throws Exception {
+    private static Map<String, String> getOSCommands() throws Exception {
         JSONObject json;
 
         switch (getOsType()) {
@@ -101,16 +109,16 @@ public class DataLoader {
 
     }
 
-    protected static int getOsType() {
+    public static int getOsType() {
         /* will return 1 for Unix-like systems :) */
         return System.getProperty("os.name").contains("Windows") ? Constants.OS_WINDOWS : Constants.OS_UNIX_LIKE;
     }
 
-    private static String retrieveLoggedUser(){
+    private static String retrieveLoggedUser() {
         return System.getProperty("user.name");
     }
 
-    protected static String retrieveHostname(){
+    protected static String retrieveHostname() {
         String host;
         if (DataLoader.getOsType() == Constants.OS_WINDOWS) {
             host = System.getenv("COMPUTERNAME");
@@ -124,11 +132,29 @@ public class DataLoader {
         return host;
     }
 
-    public static String getCrtDirectory(){
-        if (crtDirectory == null) {
-            crtDirectory = System.getProperty( "user.home" );
+    public static void setCrtDirectory(String crtDirectory) {
+        String newPath = DataLoader.getAbsolutePath(crtDirectory);
+        File newFile = new File(newPath);
+        if (newFile.exists()) {
+            if (newFile.isDirectory()) {
+                DataLoader.crtDirectory = newPath;
+                System.setProperty("user.dir", DataLoader.crtDirectory);
+            } else {
+                System.out.println("Not a directory");
+            }
+        } else {
+            System.out.println("No such file or directory");
         }
-        return crtDirectory;
+
+    }
+
+    public static String getCrtDirectory() {
+        if (crtDirectory == null) {
+            crtDirectory = System.getProperty("user.home");
+            System.setProperty("user.dir", crtDirectory);
+        }
+
+        return DataLoader.getAbsolutePath(crtDirectory);
     }
 
     public static String getCrtUser() {
@@ -143,5 +169,17 @@ public class DataLoader {
             hostName = retrieveHostname();
         }
         return hostName;
+    }
+
+    public static String getAbsolutePath(String path) {
+        if (path.startsWith("/")) {
+            return path;
+        }
+        try {
+            return Paths.get((new File(path)).getCanonicalPath()).toString();
+        } catch (IOException e) {
+            /* will return absolute path instead of canonical */
+        }
+        return Paths.get((new File(path)).getAbsolutePath()).toString();
     }
 }

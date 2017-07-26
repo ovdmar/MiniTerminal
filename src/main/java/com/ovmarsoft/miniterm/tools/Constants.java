@@ -1,5 +1,6 @@
 package com.ovmarsoft.miniterm.tools;
 
+
 /**
  * Created by ovidiu on 7/25/17.
  */
@@ -17,4 +18,8 @@ public interface Constants {
     String UNKNOWN_HOST = "unknown_host";
     String WINDOWS_PATH_SEP = "\\";
     String UNIX_PATH_SEP = "/";
+
+    static final String CMD_EXIT = DataLoader.getAvailableCommands().get("exit");
+    String CMD_LS = DataLoader.getAvailableCommands().get("list-files");
+    String CMD_CAT = DataLoader.getAvailableCommands().get("show-file");
 }

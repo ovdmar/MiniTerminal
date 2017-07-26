@@ -1,5 +1,6 @@
 {
   "list-files": "ls",
+  "show-file": "cat",
   "change-directory" : "cd",
   "clear-window" : "clear",
   "copy-file" : "cp",
@@ -7,5 +8,6 @@
   "process-status" : "ps",
   "remove-file" : "rm",
   "remove-directory" : "rmdir",
-  "create-file" : "touch"
+  "create-file" : "touch",
+  "exit" : "exit"
 }
