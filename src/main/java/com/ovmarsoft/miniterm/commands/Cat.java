@@ -17,7 +17,7 @@ public class Cat {
         BufferedReader reader;
         for(String file : filenames) {
             try {
-                File path = new File(DataLoader.getCrtDirectory() + "/" + file);
+                File path = new File(DataLoader.getCrtDirectory() + DataLoader.getPathLineSeparator() + file);
                 if (path.isDirectory()) {
                     throw new IllegalArgumentException();
                 }

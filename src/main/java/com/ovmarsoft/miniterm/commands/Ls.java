@@ -5,7 +5,6 @@ import com.ovmarsoft.miniterm.tools.Displayer;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -23,10 +22,9 @@ public class Ls {
         }
     }
 
-    // TODO genericity regarding directory separator
     public static void execute(String filename) {
         List<String> toDisplay = new ArrayList<>();
-        String path = DataLoader.getCrtDirectory() + "/" + filename;
+        String path = DataLoader.getCrtDirectory() + DataLoader.getPathLineSeparator() + filename;
         File dir = new File(path);
         if (dir.isDirectory()) {
             for (File file : dir.listFiles()){

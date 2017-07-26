@@ -20,6 +20,7 @@ public class DataLoader {
     private static String crtUser;
     private static String hostName;
     private static String crtDirectory;
+    private static String pathLineSeparator;
 
     private DataLoader() {
         /* singleton private constructor */
@@ -27,7 +28,16 @@ public class DataLoader {
         if (crtUser == null || hostName == null) {
             crtUser = retrieveLoggedUser();
             hostName = retrieveHostname();
+            if (getOsType() == Constants.OS_WINDOWS){
+                pathLineSeparator = Constants.WINDOWS_PATH_SEP;
+            } else {
+                pathLineSeparator = Constants.UNIX_PATH_SEP;
+            }
         }
+    }
+
+    public static String getPathLineSeparator() {
+        return pathLineSeparator;
     }
 
     public DataLoader getInstance() {
@@ -70,7 +80,7 @@ public class DataLoader {
 
         switch (getOsType()) {
             case Constants.OS_WINDOWS:
-                json = new JSONObject(new File("../resources/windows-commands.json"));
+                json = new JSONObject(new File("..\\resources\\windows-commands.json"));
                 break;
             case Constants.OS_UNIX_LIKE:
                 json = new JSONObject(new File("../resources/unix-commands.json"));

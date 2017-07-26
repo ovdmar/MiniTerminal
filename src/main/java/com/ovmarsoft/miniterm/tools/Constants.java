@@ -15,4 +15,6 @@ public interface Constants {
 
 
     String UNKNOWN_HOST = "unknown_host";
+    String WINDOWS_PATH_SEP = "\\";
+    String UNIX_PATH_SEP = "/";
 }
